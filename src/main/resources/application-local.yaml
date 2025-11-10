@@ -1,0 +1,3 @@
+aws:
+  integration:
+    localstack-endpoint: http://localhost:4566
