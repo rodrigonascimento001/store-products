@@ -36,19 +36,24 @@ public class MsProductService {
         productService.delete(id);
     }
 
-    public void update(String id, ProductDTO productDto){
-        productService.update(id, productDto);
+    public ProductDTO update(String id, ProductDTO productDto){
+        try {
+            return productService.update(id, productDto);
+        } catch (Exception e){
+            log.error("MsProductService error when create new product {}" , productDto, e);
+            throw new IntegrationException("MsProductService error when update new product");
+        }
     }
 
-    public void create(String title, String price, String description, String category, MultipartFile image) {
+    public ProductDTO create(String title, String price, String description, String category, MultipartFile image) {
         log.info("MsProductService create product start");
         try {
            final ProductDTO productDto = new ProductDTO(title,new BigDecimal(price),description,category);
 
-           final String idProduct =  productService.create(productDto);
-           final String keyImageInBucket = this.uploadImage(image, idProduct);
+           final ProductDTO newProduct = productService.create(productDto);
+           final String keyImageInBucket = this.uploadImage(image, newProduct.getId());
            productDto.setImage(keyImageInBucket);
-           this.productService.update(idProduct, productDto);
+           return this.productService.update(newProduct.getId(), productDto);
 
         }catch (Exception e){
             log.error("MsProductService error when create new product {}" , title, e);
