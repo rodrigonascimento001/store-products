@@ -1,15 +1,14 @@
 spring:
   application:
     name: products
-  profiles:
-    active: local
 server:
   port: 8081
 
 aws:
   integration:
     region: us-east-1
-    localstack-endpoint: http://localhost:4566
+  s3:
+    bucket: hodrics-store-bucket-001
 
 dep:
   integration:
